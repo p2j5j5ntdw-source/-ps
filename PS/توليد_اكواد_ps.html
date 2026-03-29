@@ -3,67 +3,690 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>موقع التحكم - الريس</title>
+    <title>موقع الريس - التحكم بالأجهزة عن بعد</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; background: #f0f2f5; margin:0; padding:0; }
-        .container { max-width: 800px; margin: 40px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);}
-        h1, h2 { text-align: center; color: #333; }
-        .code-box { background: #eee; padding: 15px; margin: 20px 0; text-align: center; font-size: 1.5rem; font-weight: bold; border-radius: 8px; }
-        .btn { padding: 10px 20px; margin: 5px; border:none; border-radius: 5px; cursor:pointer; font-weight:bold; }
-        .btn-primary { background: #4361ee; color: white; }
-        .btn-success { background: #4cc9f0; color: white; }
-        .btn-danger { background: #f72585; color: white; }
-        .status { text-align:center; margin:20px 0; padding:10px; border-radius:5px; font-weight:bold; }
-        .active { background: #d0f0fd; color: #0a96c7; }
-        .inactive { background: #fde0e6; color: #c51162; }
-        .offline { background: #f5f5f5; color: #999; }
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --dark: #2b2d42;
+            --light: #f8f9fa;
+            --gray: #adb5bd;
+            --gradient: linear-gradient(135deg, #4361ee, #3a0ca3);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7ff;
+            color: var(--dark);
+            min-height: 100vh;
+            direction: rtl;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: var(--gradient);
+            color: white;
+            padding: 25px 0;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 5px 20px rgba(67, 97, 238, 0.3);
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .logo i {
+            font-size: 2.8rem;
+            margin-left: 15px;
+        }
+        
+        .logo h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+        
+        .tagline {
+            text-align: center;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 800px;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-title {
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card-title i {
+            margin-left: 10px;
+        }
+        
+        .login-section {
+            text-align: center;
+        }
+        
+        .google-btn {
+            background: white;
+            color: #444;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .google-btn:hover {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .google-btn i {
+            color: #4285F4;
+            font-size: 1.5rem;
+            margin-left: 10px;
+        }
+        
+        .code-display {
+            background: #f8f9ff;
+            border: 2px dashed var(--primary);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        .code-value {
+            font-family: monospace;
+            font-size: 2.2rem;
+            letter-spacing: 3px;
+            color: var(--secondary);
+            font-weight: 700;
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .btn {
+            border: none;
+            border-radius: 50px;
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+        }
+        
+        .btn i {
+            margin-left: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--secondary);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #2ab7e0;
+            box-shadow: 0 5px 15px rgba(76, 201, 240, 0.3);
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #e11570;
+            box-shadow: 0 5px 15px rgba(247, 37, 133, 0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .status {
+            text-align: center;
+            padding: 15px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .status-active {
+            background: rgba(76, 201, 240, 0.15);
+            color: #0a96c7;
+            border: 1px solid #4cc9f0;
+        }
+        
+        .status-inactive {
+            background: rgba(247, 37, 133, 0.1);
+            color: #c51162;
+            border: 1px solid #f72585;
+        }
+        
+        .python-code {
+            background: #2b2d42;
+            color: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            color: #4cc9f0;
+        }
+        
+        .copy-btn {
+            background: #4361ee;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s;
+        }
+        
+        .copy-btn:hover {
+            background: #3a0ca3;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .instructions {
+            background: #f0f7ff;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            border-right: 5px solid var(--primary);
+        }
+        
+        .instructions h3 {
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+        
+        .instructions ol {
+            padding-right: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--gray);
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .logo h1 {
+                font-size: 2rem;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .code-value {
+                font-size: 1.7rem;
+                letter-spacing: 2px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                margin: 5px 0;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>موقع التحكم بالاداة</h1>
-        <h2>توليد كود التحكم</h2>
-
-        <div class="code-box" id="generatedCode">---</div>
-        <div style="text-align:center;">
-            <button class="btn btn-primary" id="generateBtn"><i class="fas fa-redo"></i> توليد كود جديد</button>
-            <button class="btn btn-success" id="activateBtn"><i class="fas fa-play"></i> تفعيل الكود</button>
-            <button class="btn btn-danger" id="deactivateBtn"><i class="fas fa-stop"></i> إيقاف الكود</button>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-microchip"></i>
+                <h1>موقع الريس</h1>
+            </div>
+            <p class="tagline">التحكم الذكي في أجهزتك عن بعد</p>
         </div>
+    </header>
+    
+    <div class="container">
+        <main class="main-content">
+            <!-- قسم تسجيل الدخول -->
+            <section class="card login-section" id="loginSection">
+                <h2 class="card-title"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</h2>
+                <p>للاستفادة من خدمات الموقع، يرجى تسجيل الدخول بحساب Google الخاص بك</p>
+                
+                <div class="google-btn" id="googleLoginBtn">
+                    <i class="fab fa-google"></i>
+                    <span>تسجيل الدخول باستخدام Google</span>
+                </div>
+                
+                <div class="instructions">
+                    <h3>كيفية العمل:</h3>
+                    <ol>
+                        <li>سجّل الدخول بحساب Google الخاص بك</li>
+                        <li>أنشئ كود تحكم فريد لجهازك</li>
+                        <li>انسخ كود Python وضعه في بداية برنامج جهازك</li>
+                        <li>استخدم الموقع للتحكم في جهازك عن بعد (تشغيل/إيقاف)</li>
+                    </ol>
+                </div>
+            </section>
+            
+            <!-- قسم إنشاء الكود -->
+            <section class="card hidden" id="codeSection">
+                <h2 class="card-title"><i class="fas fa-code"></i> إنشاء كود التحكم</h2>
+                <p>أنشئ كود تحكم فريد لربط جهازك بالموقع. هذا الكود سيكون مطلوبًا لتشغيل الجهاز.</p>
+                
+                <div class="code-display">
+                    <p>كود التحكم الخاص بك:</p>
+                    <div class="code-value" id="generatedCode">THE-QPO-VAQ</div>
+                    <p>شارك هذا الكود مع من تريد أن يتحكم في الجهاز</p>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn btn-primary" id="generateCodeBtn">
+                        <i class="fas fa-redo"></i> إنشاء كود جديد
+                    </button>
+                    <button class="btn btn-success" id="sendCodeBtn">
+                        <i class="fas fa-paper-plane"></i> إرسال الكود
+                    </button>
+                </div>
+            </section>
+            
+            <!-- قسم التحكم -->
+            <section class="card hidden" id="controlSection">
+                <h2 class="card-title"><i class="fas fa-gamepad"></i> لوحة التحكم</h2>
+                <p>التحكم في الجهاز المرتبط بالكود: <strong id="currentCode">THE-QPO-VAQ</strong></p>
+                
+                <div class="status" id="deviceStatus">
+                    جاري التحقق من حالة الجهاز...
+                </div>
+                
+                <div class="controls">
+                    <button class="btn btn-success" id="startBtn">
+                        <i class="fas fa-play-circle"></i> تشغيل الكود
+                    </button>
+                    <button class="btn btn-danger" id="stopBtn">
+                        <i class="fas fa-stop-circle"></i> إيقاف الكود
+                    </button>
+                    <button class="btn btn-outline" id="pythonCodeBtn">
+                        <i class="fab fa-python"></i> كود بايثون
+                    </button>
+                </div>
+                
+                <!-- قسم كود بايثون -->
+                <div class="hidden" id="pythonCodeSection">
+                    <div class="code-header">
+                        <h3><i class="fab fa-python"></i> كود الربط بلغة Python</h3>
+                        <button class="copy-btn" id="copyCodeBtn">
+                            <i class="fas fa-copy"></i> نسخ الكود
+                        </button>
+                    </div>
+                    <div class="python-code" id="pythonCode">
+import requests
+import time
 
-        <div class="status offline" id="statusBox">الحالة: غير متصل</div>
+# كود التحكم الخاص بك
+DEVICE_CODE = "THE-QPO-VAQ"
+
+# رابط موقع الريس
+CONTROL_URL = "https://alrees.com/control"
+
+def check_status():
+    """التحقق من حالة الجهاز عبر الموقع"""
+    try:
+        response = requests.post(f"{CONTROL_URL}/status", json={"code": DEVICE_CODE})
+        data = response.json()
+        return data.get("status", "offline")
+    except:
+        return "offline"
+
+def send_command(command):
+    """إرسال أمر تشغيل/إيقاف إلى الموقع"""
+    try:
+        response = requests.post(f"{CONTROL_URL}/command", 
+                                 json={"code": DEVICE_CODE, "command": command})
+        return response.json().get("success", False)
+    except:
+        return False
+
+# دالة رئيسية لمراقبة أوامر الموقع
+def main():
+    print(f"جاري تشغيل الجهاز بالكود: {DEVICE_CODE}")
+    print("جارٍ الربط مع موقع الريس...")
+    
+    current_status = "stopped"
+    
+    while True:
+        # التحقق من حالة الجهاز عبر الموقع
+        website_status = check_status()
+        
+        if website_status == "active" and current_status == "stopped":
+            print("تم استقبال أمر التشغيل من الموقع")
+            # هنا ضع كود تشغيل جهازك
+            current_status = "active"
+            print("✅ الجهاز يعمل الآن")
+            
+        elif website_status == "inactive" and current_status == "active":
+            print("تم استقبال أمر الإيقاف من الموقع")
+            # هنا ضع كود إيقاف جهازك
+            current_status = "stopped"
+            print("⛔ تم إيقاف الجهاز")
+        
+        # انتظر 3 ثوان قبل التحقق مرة أخرى
+        time.sleep(3)
+
+if __name__ == "__main__":
+    main()
+                    </div>
+                    <div class="instructions">
+                        <h3>تعليمات التركيب:</h3>
+                        <ol>
+                            <li>انسخ الكود أعلاه كاملاً</li>
+                            <li>الصقه في بداية برنامج جهازك المكتوب بلغة Python</li>
+                            <li>تأكد من تثبيت مكتبة requests بتشغيل الأمر: <code>pip install requests</code></li>
+                            <li>شغّل برنامج جهازك وسيتصل تلقائيًا بالموقع</li>
+                            <li>يمكنك الآن التحكم في جهازك من خلال هذا الموقع</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer>
+            <p>© 2023 موقع الريس - جميع الحقوق محفوظة</p>
+            <p>تم التطوير بلغات HTML، CSS، JavaScript</p>
+        </footer>
     </div>
 
     <script>
-        let deviceCode = "";
-        const codeBox = document.getElementById('generatedCode');
-        const statusBox = document.getElementById('statusBox');
-
-        async function fetchCode(action){
-            try {
-                const res = await fetch(`/api/${action}`, { method: 'POST' });
-                const data = await res.json();
-
-                if(data.code) deviceCode = data.code;
-                if(data.status) updateStatus(data.status);
-                if(action === 'generate') codeBox.textContent = deviceCode;
-            } catch(err){
-                console.error(err);
+        // عناصر DOM
+        const loginSection = document.getElementById('loginSection');
+        const codeSection = document.getElementById('codeSection');
+        const controlSection = document.getElementById('controlSection');
+        const pythonCodeSection = document.getElementById('pythonCodeSection');
+        
+        const googleLoginBtn = document.getElementById('googleLoginBtn');
+        const generateCodeBtn = document.getElementById('generateCodeBtn');
+        const sendCodeBtn = document.getElementById('sendCodeBtn');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const pythonCodeBtn = document.getElementById('pythonCodeBtn');
+        const copyCodeBtn = document.getElementById('copyCodeBtn');
+        
+        const generatedCodeElement = document.getElementById('generatedCode');
+        const currentCodeElement = document.getElementById('currentCode');
+        const deviceStatusElement = document.getElementById('deviceStatus');
+        const pythonCodeElement = document.getElementById('pythonCode');
+        
+        // متغيرات التطبيق
+        let isLoggedIn = false;
+        let deviceCode = "THE-QPO-VAQ";
+        let deviceStatus = "inactive"; // inactive, active, offline
+        
+        // تسجيل الدخول بـ Google
+        googleLoginBtn.addEventListener('click', function() {
+            // محاكاة تسجيل الدخول
+            googleLoginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري تسجيل الدخول...';
+            
+            setTimeout(() => {
+                isLoggedIn = true;
+                loginSection.classList.add('hidden');
+                codeSection.classList.remove('hidden');
+                
+                // توليد كود تلقائي
+                generateNewCode();
+            }, 1500);
+        });
+        
+        // توليد كود جديد
+        generateCodeBtn.addEventListener('click', generateNewCode);
+        
+        function generateNewCode() {
+            // توليد كود عشوائي
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const part1 = Array.from({length: 3}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+            const part2 = Array.from({length: 3}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+            const part3 = Array.from({length: 3}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+            
+            deviceCode = `${part1}-${part2}-${part3}`;
+            generatedCodeElement.textContent = deviceCode;
+            currentCodeElement.textContent = deviceCode;
+            
+            // تحديث كود Python
+            updatePythonCode();
+        }
+        
+        // إرسال الكود
+        sendCodeBtn.addEventListener('click', function() {
+            sendCodeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+            
+            setTimeout(() => {
+                sendCodeBtn.innerHTML = '<i class="fas fa-paper-plane"></i> إرسال الكود';
+                codeSection.classList.add('hidden');
+                controlSection.classList.remove('hidden');
+                
+                // التحقق من حالة الجهاز
+                checkDeviceStatus();
+            }, 1000);
+        });
+        
+        // التحقق من حالة الجهاز
+        function checkDeviceStatus() {
+            // محاكاة اتصال بالجهاز
+            const statuses = ["active", "inactive", "offline"];
+            const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+            deviceStatus = randomStatus;
+            
+            updateStatusDisplay();
+            
+            // محاكاة تحديث حالة الجهاز كل 5 ثوان
+            setInterval(() => {
+                // 80% من الوقت يبقى على حالته، 20% يتغير
+                if (Math.random() > 0.8) {
+                    const newStatus = statuses[Math.floor(Math.random() * statuses.length)];
+                    if (newStatus !== deviceStatus) {
+                        deviceStatus = newStatus;
+                        updateStatusDisplay();
+                    }
+                }
+            }, 5000);
+        }
+        
+        // تحديث عرض الحالة
+        function updateStatusDisplay() {
+            deviceStatusElement.classList.remove("status-active", "status-inactive");
+            
+            if (deviceStatus === "active") {
+                deviceStatusElement.textContent = "✅ الجهاز يعمل حالياً";
+                deviceStatusElement.classList.add("status-active");
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+            } else if (deviceStatus === "inactive") {
+                deviceStatusElement.textContent = "⛔ الجهاز متوقف حالياً";
+                deviceStatusElement.classList.add("status-inactive");
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+            } else {
+                deviceStatusElement.textContent = "🔌 الجهاز غير متصل بالإنترنت";
+                deviceStatusElement.classList.add("status-inactive");
+                startBtn.disabled = true;
+                stopBtn.disabled = true;
             }
         }
-
-        function updateStatus(status){
-            statusBox.textContent = "الحالة: " + status.toUpperCase();
-            statusBox.className = "status " + (status === "active" ? "active" : status === "inactive" ? "inactive" : "offline");
+        
+        // تشغيل الجهاز
+        startBtn.addEventListener('click', function() {
+            startBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التشغيل...';
+            
+            setTimeout(() => {
+                deviceStatus = "active";
+                updateStatusDisplay();
+                startBtn.innerHTML = '<i class="fas fa-play-circle"></i> تشغيل الكود';
+            }, 1500);
+        });
+        
+        // إيقاف الجهاز
+        stopBtn.addEventListener('click', function() {
+            stopBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإيقاف...';
+            
+            setTimeout(() => {
+                deviceStatus = "inactive";
+                updateStatusDisplay();
+                stopBtn.innerHTML = '<i class="fas fa-stop-circle"></i> إيقاف الكود';
+            }, 1500);
+        });
+        
+        // عرض كود Python
+        pythonCodeBtn.addEventListener('click', function() {
+            pythonCodeSection.classList.toggle('hidden');
+            
+            if (!pythonCodeSection.classList.contains('hidden')) {
+                pythonCodeBtn.innerHTML = '<i class="fab fa-python"></i> إخفاء كود بايثون';
+                pythonCodeBtn.classList.remove('btn-outline');
+                pythonCodeBtn.classList.add('btn-primary');
+            } else {
+                pythonCodeBtn.innerHTML = '<i class="fab fa-python"></i> كود بايثون';
+                pythonCodeBtn.classList.remove('btn-primary');
+                pythonCodeBtn.classList.add('btn-outline');
+            }
+        });
+        
+        // نسخ كود Python
+        copyCodeBtn.addEventListener('click', function() {
+            const codeText = pythonCodeElement.textContent;
+            
+            navigator.clipboard.writeText(codeText).then(() => {
+                const originalText = copyCodeBtn.innerHTML;
+                copyCodeBtn.innerHTML = '<i class="fas fa-check"></i> تم النسخ!';
+                copyCodeBtn.style.background = '#4CAF50';
+                
+                setTimeout(() => {
+                    copyCodeBtn.innerHTML = originalText;
+                    copyCodeBtn.style.background = '';
+                }, 2000);
+            });
+        });
+        
+        // تحديث كود Python مع الكود الحالي
+        function updatePythonCode() {
+            const currentCode = pythonCodeElement.textContent;
+            const updatedCode = currentCode.replace(/DEVICE_CODE = ".*?"/, `DEVICE_CODE = "${deviceCode}"`);
+            pythonCodeElement.textContent = updatedCode;
         }
-
-        document.getElementById('generateBtn').addEventListener('click', () => fetchCode('generate'));
-        document.getElementById('activateBtn').addEventListener('click', () => fetchCode('activate'));
-        document.getElementById('deactivateBtn').addEventListener('click', () => fetchCode('deactivate'));
-
-        // توليد كود تلقائي عند فتح الصفحة
-        fetchCode('generate');
+        
+        // تهيئة أولية
+        updatePythonCode();
     </script>
 </body>
 </html>
